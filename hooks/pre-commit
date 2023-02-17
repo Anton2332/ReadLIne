@@ -1,0 +1,75 @@
+#!/bin/sh
+echo "Precommit hook is running... ⏳"
+npm run lint:all
+ESLINT="$(git rev-parse --show-toplevel)/node_modules/.bin/eslint"
+
+FRONTEND_FILES=$(git diff --cached --name-only --diff-filter=AM | grep -E '(^packages/frontend)(.*)(ts$|tsx$|js$|jsx$)')
+BACKEND_FILES=$(git diff --cached --name-only --diff-filter=AM | grep -E '(^packages/backend)(.*)(ts$)')
+PASS=true
+
+echo "=============================================================================================================="
+echo "Checking branch name... ⏳"
+LC_ALL=C
+
+local_branch="$(git rev-parse --abbrev-ref HEAD)"
+
+valid_branch_regex="^(backend|contract|frontend)\/(feature|bug|refactoring|hotfix)\/[0-9]+\/[a-z0-9-]+$"
+
+message="
+⛔️
+There is something wrong with your branch name. \n
+Branch names in this project must adhere to this contract: \n
+backend|contract|frontend/feature|bugfix|improvement|library|prerelease|release|hotfix/<task-id>/task-name. \n
+Your commit will be rejected. You should rename your branch to a valid name and try again.
+⛔️"
+
+# shellcheck disable=SC2039
+if [[ ! $local_branch =~ $valid_branch_regex ]]
+then
+    echo "$message"
+    exit 1
+fi
+echo "✅ Success! ✅"
+
+echo "=============================================================================================================="
+echo "Staged changes:"
+echo '🔎 Frontend tracked files: ' $FRONTEND_FILES
+echo '🔎 Backend tracked files: ' $BACKEND_FILES
+echo "=============================================================================================================="
+echo "Mobile validation started... ⏳";
+for FILE in $FRONTEND_FILES
+do
+	$ESLINT "$FILE"
+  # shellcheck disable=SC2039
+  if [[ "$?" == 0 ]]; then
+    echo "✅ ESLint Passed: $FILE ✅"
+  else
+    echo "⛔️ ESLint Failed: $FILE ⛔️"
+    PASS=false
+  fi
+done
+echo "=============================================================================================================="
+echo "Backend validation started... ⏳";
+
+for FILE in $BACKEND_FILES
+do
+	$ESLINT "$FILE"
+  # shellcheck disable=SC2039
+  if [[ "$?" == 0 ]]; then
+    echo "✅ ESLint Passed: $FILE ✅"
+  else
+    echo "⛔️ ESLint Failed: $FILE ⛔️"
+    PASS=false
+  fi
+done
+echo "=============================================================================================================="
+
+
+if ! $PASS; then
+  echo "⛔️ COMMIT FAILED:\n Your commit contains files that should pass ESLint but do not. Please fix the ESLint errors and try again.\n ⛔️"
+  exit 1
+fi
+
+echo "✅ Success! ✅"
+
+exit $?

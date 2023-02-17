@@ -1,0 +1,46 @@
+{
+  "name": "@verona/frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "yarn check:env && next dev",
+    "build": "yarn check:env && next build",
+    "start": "next start",
+    "lint": "yarn check:env && next lint",
+    "check:env": "node ./check-env.js"
+  },
+  "dependencies": {
+    "@next/font": "13.1.6",
+    "@types/node": "18.13.0",
+    "@types/react": "18.0.28",
+    "@types/react-dom": "18.0.10",
+    "eslint": "8.34.0",
+    "eslint-config-next": "13.1.6",
+    "next": "13.1.6",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "typescript": "4.9.5",
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
+    "@mui/material": "^5.10.8",
+    "axios": "^0.27.2",
+    "formik": "^2.2.9",
+    "joi": "^17.6.0",
+    "react-hot-toast": "^2.4.0",
+    "react-query": "^3.39.2",
+    "react-scripts": "5.0.0",
+    "styled-components": "^5.3.5",
+    "web-vitals": "^2.1.2"
+  },
+  "devDependencies": {
+    "@iconify/react": "^3.2.1",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/axios": "^0.14.0",
+    "@types/qs": "^6.9.7",
+    "@types/react-blockies": "^1.4.1",
+    "@types/react-input-mask": "^3.0.1",
+    "@types/react-modal": "^3.12.1",
+    "@types/styled-components": "^5.1.14"
+  }
+}
